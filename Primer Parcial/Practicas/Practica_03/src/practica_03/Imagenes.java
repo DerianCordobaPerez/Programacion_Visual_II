@@ -104,7 +104,9 @@ public class Imagenes {
             if(this.imagenes.isEmpty()) {
                 this.imagenPredeterminada();
             } else {
-                this.obtenerImagen(this.imagenes.get(this.imagenes.size() - 1));
+                this.posicionActual = this.imagenes.size() - 1;
+                this.obtenerImagen(this.imagenes.get(this.posicionActual));
+                this.cambiarNombreImagen();
             }
             
             JOptionPane.showMessageDialog(null, "Imagen eliminada correctamente");

@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 public class JVisorImagenes extends javax.swing.JFrame {
 
     private final Imagenes imagenes;
-    private final int CLICK_DOBLE = 2;
+    private final int DOBLE_CLICK = 2;
     
     public JVisorImagenes() {
         initComponents();
@@ -284,7 +284,7 @@ public class JVisorImagenes extends javax.swing.JFrame {
     }//GEN-LAST:event_JButtonGuardarMouseReleased
 
     private void JTextFieldNombreImagenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTextFieldNombreImagenMouseClicked
-        if(evt.getClickCount() == this.CLICK_DOBLE) {
+        if(evt.getClickCount() == this.DOBLE_CLICK) {
             this.activarDesactivarControles();
         }
     }//GEN-LAST:event_JTextFieldNombreImagenMouseClicked
@@ -304,7 +304,7 @@ public class JVisorImagenes extends javax.swing.JFrame {
     private void JLabelVisorImagenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JLabelVisorImagenMouseClicked
         if(evt.getButton() == MouseEvent.BUTTON1) {
             this.imagenes.cambiarImagen(-1);
-        } else {
+        } else if(evt.getButton() == MouseEvent.BUTTON3) {
             this.imagenes.cambiarImagen(1);
         }
     }//GEN-LAST:event_JLabelVisorImagenMouseClicked
