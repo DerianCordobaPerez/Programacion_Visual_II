@@ -10,11 +10,11 @@ public class JCadenasTexto extends javax.swing.JFrame {
     }
     
     private boolean validacionCadenas() {        
-        return this.JTextFieldCadenaNumeroUno.getText().isEmpty() || this.JTextFieldCadenaNumeroDos.getText().isEmpty();
+        return this.JTextFieldCadenaNumeroUno.getText().trim().isEmpty() || this.JTextFieldCadenaNumeroDos.getText().trim().isEmpty();
     }
     
     private boolean cadenasIguales() {
-        return this.JTextFieldCadenaNumeroUno.getText().equalsIgnoreCase(this.JTextFieldCadenaNumeroDos.getText());
+        return this.JTextFieldCadenaNumeroUno.getText().toLowerCase().equalsIgnoreCase(this.JTextFieldCadenaNumeroDos.getText().toLowerCase());
     }
 
     @SuppressWarnings("unchecked")
@@ -232,7 +232,7 @@ public class JCadenasTexto extends javax.swing.JFrame {
         this.JTextFieldCadenaDosMayuscula.setText(this.JTextFieldCadenaNumeroDos.getText().toUpperCase());
     }//GEN-LAST:event_JButtonMayusculaMouseReleased
 
-    public static void main(String args[]) {
+    public static void main(String... args) {
         java.awt.EventQueue.invokeLater(() -> {
             new JCadenasTexto().setVisible(true);
         });
