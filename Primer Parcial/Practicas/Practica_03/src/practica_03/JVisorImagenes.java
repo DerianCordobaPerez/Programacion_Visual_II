@@ -1,9 +1,15 @@
 package practica_03;
 
-import java.awt.event.KeyEvent;
+import java.awt.Graphics;
+import java.awt.HeadlessException;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class JVisorImagenes extends javax.swing.JFrame {
 
@@ -15,31 +21,32 @@ public class JVisorImagenes extends javax.swing.JFrame {
         this.imagenes = new Imagenes(this.JLabelVisorImagen, this.JLabelNombreFoto, this.JButtonBorrar);
     }
     
-    private void activarDesactivarControles() {
-        boolean habilitado = this.JTextFieldNombreImagen.isEnabled();
-            
-        Arrays.asList(
-            this.JButtonCancelar,
-            this.JButtonGuardar
-        ).forEach(boton -> boton.setEnabled(!habilitado));
-
-        if(habilitado) {
-            this.JTextFieldNombreImagen.setText("");
-        }
-        
-        this.JButtonNuevo.setEnabled(habilitado);
-        this.JTextFieldNombreImagen.setEnabled(!habilitado);
+    private BufferedImage obtenerBufferedImagenDesdeIcono(Icon icon) {
+        BufferedImage buffer = new BufferedImage(
+                icon.getIconWidth(), 
+                icon.getIconHeight(),
+                BufferedImage.TYPE_INT_ARGB
+        );
+        Graphics g = buffer.getGraphics();
+        icon.paintIcon(null, g, 0, 0);
+        g.dispose();
+        return buffer;
     }
     
-    private void guardarImagen() {
-        if(this.JTextFieldNombreImagen.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre de la imagen no es correcto");
-        } else {
-            this.imagenes.agregarImagen(this.JTextFieldNombreImagen.getText());
-            this.activarDesactivarControles();
+    private void activarDesactivarControles() {
+        boolean habilitado = this.imagenes.esVacia();
+        this.JButtonBorrar.setEnabled(!habilitado);
+        this.JButtonGuardarComo.setEnabled(!habilitado);
+    }
+    
+    private void guardarImagen(String imagen) {
+        if(imagen.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre de la imagen no puede ser vacio");
+            return;
         }
         
-        this.JTextFieldNombreImagen.setText("");
+        this.imagenes.agregarImagen(imagen);
+        this.activarDesactivarControles();
     }
     
     @SuppressWarnings("unchecked")
@@ -47,12 +54,9 @@ public class JVisorImagenes extends javax.swing.JFrame {
     private void initComponents() {
 
         JPanelSelectorImagenes = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        JTextFieldNombreImagen = new javax.swing.JTextField();
         JButtonNuevo = new javax.swing.JButton();
-        JButtonGuardar = new javax.swing.JButton();
         JButtonBorrar = new javax.swing.JButton();
-        JButtonCancelar = new javax.swing.JButton();
+        JButtonGuardarComo = new javax.swing.JButton();
         JLabelNombreFoto = new javax.swing.JLabel();
         JLabelVisorImagen = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -67,35 +71,10 @@ public class JVisorImagenes extends javax.swing.JFrame {
 
         JPanelSelectorImagenes.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Selecciona una imagen", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Cascadia Mono PL", 0, 18), new java.awt.Color(153, 0, 153))); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Cascadia Mono PL", 0, 14)); // NOI18N
-        jLabel1.setText("Nombre de la imagen");
-
-        JTextFieldNombreImagen.setFont(new java.awt.Font("Cascadia Mono PL", 0, 14)); // NOI18N
-        JTextFieldNombreImagen.setToolTipText("");
-        JTextFieldNombreImagen.setEnabled(false);
-        JTextFieldNombreImagen.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                JTextFieldNombreImagenMouseClicked(evt);
-            }
-        });
-        JTextFieldNombreImagen.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                JTextFieldNombreImagenKeyPressed(evt);
-            }
-        });
-
         JButtonNuevo.setText("Nuevo");
         JButtonNuevo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 JButtonNuevoMouseReleased(evt);
-            }
-        });
-
-        JButtonGuardar.setText("Guardar");
-        JButtonGuardar.setEnabled(false);
-        JButtonGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                JButtonGuardarMouseReleased(evt);
             }
         });
 
@@ -107,11 +86,11 @@ public class JVisorImagenes extends javax.swing.JFrame {
             }
         });
 
-        JButtonCancelar.setText("Cancelar");
-        JButtonCancelar.setEnabled(false);
-        JButtonCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
+        JButtonGuardarComo.setText("Guardar Como");
+        JButtonGuardarComo.setEnabled(false);
+        JButtonGuardarComo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                JButtonCancelarMouseReleased(evt);
+                JButtonGuardarComoMouseReleased(evt);
             }
         });
 
@@ -120,35 +99,21 @@ public class JVisorImagenes extends javax.swing.JFrame {
         JPanelSelectorImagenesLayout.setHorizontalGroup(
             JPanelSelectorImagenesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JPanelSelectorImagenesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(JPanelSelectorImagenesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(JPanelSelectorImagenesLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(JTextFieldNombreImagen))
-                    .addGroup(JPanelSelectorImagenesLayout.createSequentialGroup()
-                        .addComponent(JButtonNuevo)
-                        .addGap(49, 49, 49)
-                        .addComponent(JButtonGuardar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                        .addComponent(JButtonBorrar)
-                        .addGap(57, 57, 57)
-                        .addComponent(JButtonCancelar)))
+                .addComponent(JButtonNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62)
+                .addComponent(JButtonGuardarComo, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(JButtonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         JPanelSelectorImagenesLayout.setVerticalGroup(
             JPanelSelectorImagenesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JPanelSelectorImagenesLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(JPanelSelectorImagenesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(JTextFieldNombreImagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addGroup(JPanelSelectorImagenesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JButtonNuevo)
-                    .addComponent(JButtonGuardar)
                     .addComponent(JButtonBorrar)
-                    .addComponent(JButtonCancelar))
+                    .addComponent(JButtonGuardarComo))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -231,7 +196,7 @@ public class JVisorImagenes extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(170, 170, 170)
                         .addComponent(JLabelNombreFoto)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 176, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(JLabelVisorImagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -247,19 +212,32 @@ public class JVisorImagenes extends javax.swing.JFrame {
                 .addComponent(JPanelSelectorImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(JLabelNombreFoto)
-                .addGap(18, 18, 18)
-                .addComponent(JLabelVisorImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(JLabelVisorImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void JButtonNuevoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtonNuevoMouseReleased
-        if(this.JButtonNuevo.isEnabled()) {
-            this.activarDesactivarControles();
+        JFileChooser ventanaAbrir = new JFileChooser(System.getProperty("user.dir"));
+        FileNameExtensionFilter extensiones = new FileNameExtensionFilter("Imagenes JPG y PNG", "jpg", "jpeg", "png");
+        ventanaAbrir.setFileFilter(extensiones);
+        
+        try {
+            int imagenSeleccionada = ventanaAbrir.showOpenDialog(this);
+        
+            if(imagenSeleccionada == JFileChooser.APPROVE_OPTION) {
+                String imagen = ventanaAbrir.getSelectedFile().getName();
+                this.guardarImagen(imagen);
+            } else {
+                JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna imagen");
+            }
+        } catch(HeadlessException e) {
+            System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_JButtonNuevoMouseReleased
 
@@ -279,22 +257,6 @@ public class JVisorImagenes extends javax.swing.JFrame {
         this.imagenes.adelantarTodo();
     }//GEN-LAST:event_JButtonAdelantarTodoMouseReleased
 
-    private void JButtonGuardarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtonGuardarMouseReleased
-        this.guardarImagen();
-    }//GEN-LAST:event_JButtonGuardarMouseReleased
-
-    private void JTextFieldNombreImagenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTextFieldNombreImagenMouseClicked
-        if(evt.getClickCount() == this.DOBLE_CLICK) {
-            this.activarDesactivarControles();
-        }
-    }//GEN-LAST:event_JTextFieldNombreImagenMouseClicked
-
-    private void JButtonCancelarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtonCancelarMouseReleased
-        if(this.JButtonCancelar.isEnabled()) {
-            this.activarDesactivarControles();
-        }
-    }//GEN-LAST:event_JButtonCancelarMouseReleased
-
     private void JButtonBorrarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtonBorrarMouseReleased
         if(this.JButtonBorrar.isEnabled()) {
             this.imagenes.eliminarImagen();
@@ -309,11 +271,37 @@ public class JVisorImagenes extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_JLabelVisorImagenMouseClicked
 
-    private void JTextFieldNombreImagenKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextFieldNombreImagenKeyPressed
-        if(KeyEvent.VK_ENTER == evt.getKeyCode()) {
-            this.guardarImagen();
+    private void JButtonGuardarComoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtonGuardarComoMouseReleased
+        if(this.JButtonGuardarComo.isEnabled()) {
+            JFileChooser ventanaGuardar = new JFileChooser();
+            ventanaGuardar.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            int imagenSeleccionada = ventanaGuardar.showSaveDialog(this);
+            
+            if(imagenSeleccionada == JFileChooser.APPROVE_OPTION) {
+                try {
+                    Icon icono = this.JLabelVisorImagen.getIcon();
+                    BufferedImage imagen = this.obtenerBufferedImagenDesdeIcono(icono);
+                    
+                    boolean guardado = ImageIO.write(
+                        imagen,
+                        "jpg", 
+                        ventanaGuardar.getSelectedFile().getAbsoluteFile()
+                    );
+                    
+                    if(!guardado) {
+                        JOptionPane.showMessageDialog(this, "La imagen no se ha podido guardar correctamente");
+                        return;
+                    }
+                    
+                    JOptionPane.showMessageDialog(this, "Imagen guardada correctamente");
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "No se ha podido guardar la imagen");
+            }
         }
-    }//GEN-LAST:event_JTextFieldNombreImagenKeyPressed
+    }//GEN-LAST:event_JButtonGuardarComoMouseReleased
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -344,16 +332,13 @@ public class JVisorImagenes extends javax.swing.JFrame {
     private javax.swing.JButton JButtonAdelantar;
     private javax.swing.JButton JButtonAdelantarTodo;
     private javax.swing.JButton JButtonBorrar;
-    private javax.swing.JButton JButtonCancelar;
-    private javax.swing.JButton JButtonGuardar;
+    private javax.swing.JButton JButtonGuardarComo;
     private javax.swing.JButton JButtonNuevo;
     private javax.swing.JButton JButtonRetroceder;
     private javax.swing.JButton JButtonRetrocederTodo;
     private javax.swing.JLabel JLabelNombreFoto;
     private javax.swing.JLabel JLabelVisorImagen;
     private javax.swing.JPanel JPanelSelectorImagenes;
-    private javax.swing.JTextField JTextFieldNombreImagen;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

@@ -206,7 +206,7 @@ public class JCadenasTexto extends javax.swing.JFrame {
             return;
         }
         
-        this.JTextFieldCadenaConcatenada.setText(String.format("%s %s", this.JTextFieldCadenaNumeroUno.getText(), this.JTextFieldCadenaNumeroDos.getText()));
+        this.JTextFieldCadenaConcatenada.setText(String.format("%s %s", this.JTextFieldCadenaNumeroUno.getText().trim(), this.JTextFieldCadenaNumeroDos.getText().trim()));
     }//GEN-LAST:event_JButtonConcatenarMouseReleased
 
     private void JButtonCompararMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtonCompararMouseReleased
@@ -228,8 +228,8 @@ public class JCadenasTexto extends javax.swing.JFrame {
             return;
         }
         
-        this.JTextFieldCadenaUnoMayuscula.setText(this.JTextFieldCadenaNumeroUno.getText().toUpperCase());
-        this.JTextFieldCadenaDosMayuscula.setText(this.JTextFieldCadenaNumeroDos.getText().toUpperCase());
+        this.JTextFieldCadenaUnoMayuscula.setText(this.JTextFieldCadenaNumeroUno.getText().trim().toUpperCase());
+        this.JTextFieldCadenaDosMayuscula.setText(this.JTextFieldCadenaNumeroDos.getText().trim().toUpperCase());
     }//GEN-LAST:event_JButtonMayusculaMouseReleased
 
     public static void main(String... args) {

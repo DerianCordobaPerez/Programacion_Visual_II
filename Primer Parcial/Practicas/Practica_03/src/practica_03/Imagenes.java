@@ -1,6 +1,7 @@
 package practica_03;
 
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -82,13 +83,16 @@ public class Imagenes {
         }
     }
     
-    public void obtenerImagen(String imagen) {
+    public ImageIcon obtenerImagen(String imagen) {
         if(!this.buscarImagen(imagen)) {
             JOptionPane.showMessageDialog(null, "La imagen solicitada no se encuentra.");
-            return;
+            return null;
         }
         
-        this.visor.setIcon(this.imagen.obtenerImagen(imagen));
+        ImageIcon imagenIcono = this.imagen.obtenerImagen(imagen);
+        this.visor.setIcon(imagenIcono);
+        
+        return imagenIcono;
     }
     
     private void imagenPredeterminada() {
@@ -111,5 +115,9 @@ public class Imagenes {
             
             JOptionPane.showMessageDialog(null, "Imagen eliminada correctamente");
         }
+    }
+    
+    public boolean esVacia() {
+        return this.imagenes.isEmpty();
     }
 }

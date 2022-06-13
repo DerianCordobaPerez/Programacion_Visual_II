@@ -15,7 +15,8 @@ public class Imagen {
     }
 
     public URL buscarImagen(String imagen) {
-        return this.getClass().getResource(String.format("%s/%s", this.CARPETA, imagen));
+        return this.getClass()
+                .getResource(String.format("%s/%s", this.CARPETA, imagen));
     }
     
     public boolean existeImagen(String imagen) {
