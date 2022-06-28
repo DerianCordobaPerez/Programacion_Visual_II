@@ -21,13 +21,7 @@ public class ContadorPalabras extends HiloBase {
     }
     
     @Override
-    protected String obtenerInformacion() {
-        String contenido = this.contenido.getText();
-        
-        if(contenido.length() == 0) {
-            return "0";
-        }
-        
+    protected String establecerInformacion(String contenido) {
         int cantidadPalabras = contenido
             .lines()
             .filter(linea -> !linea.isBlank())
@@ -37,7 +31,7 @@ public class ContadorPalabras extends HiloBase {
             .flatMap(Stream::of)
             .collect(Collectors.toList())
             .size();
-                
+
         return String.format("%d", cantidadPalabras);
     }
 }

@@ -44,22 +44,18 @@ public class JBlocNotas extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        JTextAreaBlocContenido = new javax.swing.JTextArea();
         JPanelInformacion = new javax.swing.JPanel();
         JLabelPalabras = new javax.swing.JLabel();
         JLabelCaracteresSinEspacio = new javax.swing.JLabel();
         JLabelCaracteresConEspacio = new javax.swing.JLabel();
         JLabelCaracteresParrafos = new javax.swing.JLabel();
         JLabelCaracteresLineas = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        JTextAreaBlocContenido = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Contador con hilos");
         setResizable(false);
-
-        JTextAreaBlocContenido.setColumns(20);
-        JTextAreaBlocContenido.setRows(5);
-        jScrollPane1.setViewportView(JTextAreaBlocContenido);
 
         JPanelInformacion.setLayout(new java.awt.GridLayout(1, 0, 2, 0));
 
@@ -78,6 +74,10 @@ public class JBlocNotas extends javax.swing.JFrame {
         JLabelCaracteresLineas.setText("jLabel1");
         JPanelInformacion.add(JLabelCaracteresLineas);
 
+        JTextAreaBlocContenido.setColumns(20);
+        JTextAreaBlocContenido.setRows(5);
+        jScrollPane1.setViewportView(JTextAreaBlocContenido);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -85,8 +85,8 @@ public class JBlocNotas extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1128, Short.MAX_VALUE)
-                    .addComponent(JPanelInformacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1)
+                    .addComponent(JPanelInformacion, javax.swing.GroupLayout.DEFAULT_SIZE, 1111, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

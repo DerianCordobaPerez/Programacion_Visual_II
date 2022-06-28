@@ -21,13 +21,7 @@ public class ContadorLineas extends HiloBase {
     }
     
     @Override
-    protected String obtenerInformacion() {
-        String contenido = this.contenido.getText();
-        
-        if(contenido.length() == 0) {
-            return "0";
-        }
-        
+    protected String establecerInformacion(String contenido) {
         int cantidadLineas = this.contenido
             .getLineCount();
                 

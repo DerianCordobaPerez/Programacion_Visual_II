@@ -18,7 +18,17 @@ public abstract class HiloBase extends Thread {
     }
     
     protected abstract void actualizarInformacion();
-    protected abstract String obtenerInformacion();
+    protected abstract String establecerInformacion(String contenido);
+    
+    protected String obtenerInformacion() {
+        String contenido = this.contenido.getText();
+        
+        if(contenido.length() == 0) {
+            return "0";
+        }
+        
+        return this.establecerInformacion(contenido);
+    }
     
     @SuppressWarnings("InfiniteLoopStatement")
     @Override
